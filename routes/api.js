@@ -54,7 +54,7 @@ module.exports = function (app) {
       try {
         const deleted = await Book.deleteMany();
         console.log("deleted :>>", deleted);
-        res.send("complete delete successfully");
+        res.send("complete delete successful");
       } catch (err) {
         res.send("error");
       }
@@ -96,12 +96,19 @@ module.exports = function (app) {
           commentcount: book.comments.length,
         });
       } catch (err) {
-        res.send("no book exist");
+        res.send("no book exists");
       }
     })
 
-    .delete(function (req, res) {
+    .delete(async (req, res) => {
       let bookid = req.params.id;
-      //if successful response will be 'delete successful'
+      try {
+        const deleted = await Book.findByIdAndDelete(bookid);
+        console.log("deleted :>>", deleted);
+        if (!deleted) throw new Error("no book exists");
+        res.send("delete successful");
+      } catch (err) {
+        res.send("no book exists");
+      }
     });
 };
